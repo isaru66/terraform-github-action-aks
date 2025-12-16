@@ -32,13 +32,13 @@ resource "azurerm_monitor_data_collection_rule" "log_dcr" {
   }
 
   data_flow {
-    streams = local.streams
+    streams      = local.streams
     destinations = ["ciworkspace"]
   }
 
   data_sources {
     extension {
-      streams = local.streams
+      streams        = local.streams
       extension_name = "ContainerInsights"
       extension_json = jsonencode({
         "dataCollectionSettings" : {
