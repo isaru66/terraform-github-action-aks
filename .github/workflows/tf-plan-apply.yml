@@ -25,6 +25,9 @@ jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     env:
       #this is needed since we are running terraform with read-only permissions
       ARM_SKIP_PROVIDER_REGISTRATION: true
@@ -35,7 +38,7 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
-      
+
     - name: Azure Login
       uses: azure/login@v2
       with:
