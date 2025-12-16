@@ -25,6 +25,7 @@ jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       id-token: write
       contents: read
@@ -132,6 +133,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-plan]
+    permissions:
+      id-token: write
+      contents: read
     
     steps:
     # Checkout the repository to the GitHub Actions runner
