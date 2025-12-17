@@ -3,7 +3,7 @@ data "azurerm_resource_group" "example" {
 }
 
 resource "azurerm_user_assigned_identity" "example" {
-  name                = "umi-${var.resource_suffix}-aks-identity"
+  name                = "uami-${var.resource_suffix}-aks-identity"
   location            = data.azurerm_resource_group.example.location
   resource_group_name = data.azurerm_resource_group.example.name
 }
