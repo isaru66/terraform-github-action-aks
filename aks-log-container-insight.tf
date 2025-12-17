@@ -1,6 +1,6 @@
 locals {
   enable_high_log_scale_mode = false # contains("ContainerInsightsExtension", "Microsoft-ContainerLogV2-HighScale")
-  ingestion_dce_name_full    = "MSCI-ingest-${azurerm_resource_group.example.location}-${azurerm_kubernetes_cluster.example.name}"
+  ingestion_dce_name_full    = "MSCI-ingest-${data.azurerm_resource_group.example.location}-${azurerm_kubernetes_cluster.example.name}"
   ingestion_dce_name_trimmed = substr(local.ingestion_dce_name_full, 0, 43)
   ingestion_dce_name         = endswith(local.ingestion_dce_name_trimmed, "-") ? substr(local.ingestion_dce_name_trimmed, 0, 42) : local.ingestion_dce_name_trimmed
   streams = [
@@ -14,15 +14,15 @@ locals {
 resource "azurerm_monitor_data_collection_endpoint" "ingestion_dce" {
   count               = local.enable_high_log_scale_mode ? 1 : 0
   name                = local.ingestion_dce_name
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
   kind                = "Linux"
 }
 
 resource "azurerm_monitor_data_collection_rule" "log_dcr" {
-  name                = "MSCI-${azurerm_resource_group.example.location}-${azurerm_kubernetes_cluster.example.name}"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
+  name                = "MSCI-${data.azurerm_resource_group.example.location}-${azurerm_kubernetes_cluster.example.name}"
+  resource_group_name = data.azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
 
   destinations {
     log_analytics {
