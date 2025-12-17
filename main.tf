@@ -1,18 +1,18 @@
-resource "azurerm_resource_group" "example" {
-  name     = "rg-${var.resource_suffix}"
-  location = "Southeast Asia"
+data "azurerm_resource_group" "example" {
+  name     = "${var.resource_group_name}"
+  location = "${var.location}"
 }
 
 resource "azurerm_user_assigned_identity" "example" {
   name                = "umi-${var.resource_suffix}-aks-identity"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
 }
 
 resource "azurerm_kubernetes_cluster" "example" {
   name                = "aks-${var.resource_suffix}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   dns_prefix          = "exampleaks1"
 
   default_node_pool {
@@ -48,24 +48,24 @@ resource "azurerm_kubernetes_cluster" "example" {
 
 resource "azurerm_monitor_workspace" "amw" {
   name                = "amw-${var.resource_suffix}"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
 }
 
 # Create data collection endpoint for AKS metrics
 # This endpoint is used to collect and route metrics from the AKS cluster
 resource "azurerm_monitor_data_collection_endpoint" "dce" {
-  name                = substr("MSProm-${azurerm_resource_group.example.location}-${var.resource_suffix}", 0, min(44, length("MSProm-${azurerm_resource_group.example.location}-${var.resource_suffix}"))) # MSProm-southeastasia-aks-isaru66-002-temp
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
+  name                = substr("MSProm-${data.azurerm_resource_group.example.location}-${var.resource_suffix}", 0, min(44, length("MSProm-${data.azurerm_resource_group.example.location}-${var.resource_suffix}"))) # MSProm-southeastasia-aks-isaru66-002-temp
+  resource_group_name = data.azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
   kind                = "Linux"
 }
 
 resource "azurerm_monitor_data_collection_rule" "dcr" {
-  name                        = "MSProm-${azurerm_resource_group.example.location}-${var.resource_suffix}"
+  name                        = "MSProm-${data.azurerm_resource_group.example.location}-${var.resource_suffix}"
   description                 = "DCR for Azure Monitor Metrics Profile (Managed Prometheus)"
-  resource_group_name         = azurerm_resource_group.example.name
-  location                    = azurerm_resource_group.example.location
+  resource_group_name         = data.azurerm_resource_group.example.name
+  location                    = data.azurerm_resource_group.example.location
   data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.dce.id
   kind                        = "Linux"
 
@@ -97,7 +97,7 @@ resource "azurerm_monitor_data_collection_rule" "dcr" {
 
 # Associate the data collection rule with the AKS cluster
 resource "azurerm_monitor_data_collection_rule_association" "dcra" {
-  name                    = "MSProm-${azurerm_resource_group.example.location}-${var.resource_suffix}"
+  name                    = "MSProm-${data.azurerm_resource_group.example.location}-${var.resource_suffix}"
   target_resource_id      = azurerm_kubernetes_cluster.example.id
   data_collection_rule_id = azurerm_monitor_data_collection_rule.dcr.id
   description             = "Association of data collection rule. Deleting this association will break the prometheus metrics data collection for this AKS Cluster."
@@ -119,8 +119,8 @@ output "kube_config" {
 # Node Recording Rules - Linux
 resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_rule_group" {
   name                = "NodeRecordingRulesRuleGroup - ${azurerm_kubernetes_cluster.example.name}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   cluster_name        = azurerm_kubernetes_cluster.example.name
   description         = "Node Recording Rules RuleGroup"
   rule_group_enabled  = true
@@ -210,8 +210,8 @@ EOF
 # Kubernetes Recording Rules
 resource "azurerm_monitor_alert_prometheus_rule_group" "kubernetes_recording_rules" {
   name                = "KubernetesRecordingRulesRuleGroup - ${azurerm_kubernetes_cluster.example.name}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   cluster_name        = azurerm_kubernetes_cluster.example.name
   description         = "Kubernetes Recording Rules RuleGroup"
   rule_group_enabled  = true
@@ -368,8 +368,8 @@ EOF
 # Node Recording Rules - Windows (disabled by default)
 resource "azurerm_monitor_alert_prometheus_rule_group" "node_recording_rules_windows" {
   name                = "NodeRecordingRulesRuleGroup-Win - ${azurerm_kubernetes_cluster.example.name}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   cluster_name        = azurerm_kubernetes_cluster.example.name
   description         = "Node Recording Rules RuleGroup for Windows"
   rule_group_enabled  = false
@@ -486,8 +486,8 @@ EOF
 # Node and Kubernetes Recording Rules - Windows (disabled by default)
 resource "azurerm_monitor_alert_prometheus_rule_group" "node_kubernetes_recording_rules_windows" {
   name                = "NodeAndKubernetesRecordingRulesRuleGroup-Win - ${azurerm_kubernetes_cluster.example.name}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   cluster_name        = azurerm_kubernetes_cluster.example.name
   description         = "Node and Kubernetes Recording Rules RuleGroup for Windows"
   rule_group_enabled  = false
@@ -619,8 +619,8 @@ EOF
 # This enable Container Insights
 resource "azurerm_monitor_alert_prometheus_rule_group" "ux_recording_rules_linux" {
   name                = "UXRecordingRulesRuleGroup - ${azurerm_kubernetes_cluster.example.name}"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = data.azurerm_resource_group.example.location
+  resource_group_name = data.azurerm_resource_group.example.name
   cluster_name        = azurerm_kubernetes_cluster.example.name
   description         = "UX Recording Rules for Linux"
   rule_group_enabled  = true
