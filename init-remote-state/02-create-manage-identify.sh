@@ -6,8 +6,8 @@ UAMI_NAME=uami-github-terraform
 SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 
 # GitHub repository details - UPDATE THESE VALUES
-GITHUB_ORG="your-github-org"          # Your GitHub organization or username
-GITHUB_REPO="your-repo-name"          # Your repository name
+GITHUB_ORG="isaru66"          # Your GitHub organization or username
+GITHUB_REPO="terraform-github-action-aks"          # Your repository name
 GITHUB_BRANCH="main"                  # Branch name for the federated credential
 
 echo "Creating User-assigned Managed Identity..."

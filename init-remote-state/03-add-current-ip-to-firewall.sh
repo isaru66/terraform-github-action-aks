@@ -6,9 +6,19 @@
 RESOURCE_GROUP_NAME=${AZURE_RESOURCE_GROUP_NAME:-rg-isaru66-aks-terraform}
 STORAGE_ACCOUNT_NAME=${TERRAFORM_STORAGE_ACCOUNT_NAME:-stisaru66tfstate23197}
 
+
+
 # Get current public IP
 CURRENT_IP=$(curl -s https://api.ipify.org)
 echo "Current IP: $CURRENT_IP"
+
+# Enable public network access from selected networks
+echo "Enabling public network access from selected networks..."
+az storage account update \
+  --resource-group $RESOURCE_GROUP_NAME \
+  --name $STORAGE_ACCOUNT_NAME \
+  --public-network-access Enabled \
+  --default-action Deny
 
 # Add current IP to storage account network rules
 echo "Adding IP $CURRENT_IP to storage account $STORAGE_ACCOUNT_NAME firewall rules..."
