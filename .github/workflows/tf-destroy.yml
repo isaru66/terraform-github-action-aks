@@ -151,6 +151,15 @@ jobs:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      
+    # Add current IP to storage account firewall to allow Terraform to access remote state
+    - name: Add Current IP to Storage Account Firewall
+      env:
+        AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+        TERRAFORM_STORAGE_ACCOUNT_NAME: ${{ secrets.TERRAFORM_STORAGE_ACCOUNT_NAME }}
+      run: |
+        chmod +x ./init-remote-state/03-add-current-ip-to-firewall.sh
+        ./init-remote-state/03-add-current-ip-to-firewall.sh
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
