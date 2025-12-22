@@ -22,6 +22,7 @@ echo "Verifying access to Terraform state storage..."
 MAX_RETRIES=5
 RETRY_COUNT=0
 ACCESS_GRANTED=false
+SLEEP_DURATION=5
 
 while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
   echo "Attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
@@ -38,8 +39,8 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
   
   RETRY_COUNT=$((RETRY_COUNT + 1))
   if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-    echo "Access not yet available, waiting 2 seconds before retry..."
-    sleep 2
+    echo "Access not yet available, waiting ${SLEEP_DURATION} seconds before retry..."
+    sleep $SLEEP_DURATION
   fi
 done
 
