@@ -61,12 +61,6 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    # Install the latest version of the Terraform CLI
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_wrapper: false
-
     # Add current IP to storage account firewall to allow Terraform to access remote state
     - name: Add Current IP to Storage Account Firewall
       env:
@@ -75,6 +69,12 @@ jobs:
       run: |
         chmod +x ./init-remote-state/03-add-current-ip-to-firewall.sh
         ./init-remote-state/03-add-current-ip-to-firewall.sh
+
+    # Install the latest version of the Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_wrapper: false
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
@@ -171,11 +171,7 @@ jobs:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-
+        
     # Add current IP to storage account firewall to allow Terraform to access remote state
     - name: Add Current IP to Storage Account Firewall
       env:
@@ -184,6 +180,10 @@ jobs:
       run: |
         chmod +x ./init-remote-state/03-add-current-ip-to-firewall.sh
         ./init-remote-state/03-add-current-ip-to-firewall.sh
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
