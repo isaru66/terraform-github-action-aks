@@ -32,7 +32,7 @@ echo "Verifying access to Terraform state storage..."
 MAX_RETRIES=5
 RETRY_COUNT=0
 ACCESS_GRANTED=false
-SLEEP_DURATION=5
+SLEEP_DURATION=10
 
 while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
   echo "Attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES..."
