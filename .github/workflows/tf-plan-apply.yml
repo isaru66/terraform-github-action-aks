@@ -67,6 +67,15 @@ jobs:
       with:
         terraform_wrapper: false
 
+    # Add current IP to storage account firewall to allow Terraform to access remote state
+    - name: Add Current IP to Storage Account Firewall
+      env:
+        AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+        TERRAFORM_STORAGE_ACCOUNT_NAME: ${{ secrets.TERRAFORM_STORAGE_ACCOUNT_NAME }}
+      run: |
+        chmod +x ./init-remote-state/03-add-current-ip-to-firewall.sh
+        ./init-remote-state/03-add-current-ip-to-firewall.sh
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
@@ -166,6 +175,15 @@ jobs:
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
+
+    # Add current IP to storage account firewall to allow Terraform to access remote state
+    - name: Add Current IP to Storage Account Firewall
+      env:
+        AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+        TERRAFORM_STORAGE_ACCOUNT_NAME: ${{ secrets.TERRAFORM_STORAGE_ACCOUNT_NAME }}
+      run: |
+        chmod +x ./init-remote-state/03-add-current-ip-to-firewall.sh
+        ./init-remote-state/03-add-current-ip-to-firewall.sh
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
