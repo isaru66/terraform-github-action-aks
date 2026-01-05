@@ -13,11 +13,15 @@ resource "azurerm_kubernetes_cluster" "example" {
   location            = data.azurerm_resource_group.example.location
   resource_group_name = data.azurerm_resource_group.example.name
   dns_prefix          = "exampleaks1"
+  sku_tier            = "Standard"
 
   default_node_pool {
-    name       = "default"
-    node_count = 1
-    vm_size    = "Standard_D4ads_v5"
+    name                 = "default"
+    vm_size              = "Standard_D4ads_v5"
+    auto_scaling_enabled = true
+    node_count           = 1
+    min_count            = 1
+    max_count            = 3
   }
 
   # Need to use Usser Assigned Identity for upgrade from Kubenet -> CNI
