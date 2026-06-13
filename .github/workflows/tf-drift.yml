@@ -11,6 +11,11 @@ permissions:
   contents: read
   issues: write
 
+# Avoid overlapping drift runs racing on Terraform state
+concurrency:
+  group: terraform-drift
+  cancel-in-progress: false
+
 #These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
 env:
   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
